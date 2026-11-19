@@ -5,6 +5,8 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ## [Unreleased]
 
+## [0.2.0] — 2026-11-19
+
 ### Documentation
 - New **Feature reference** (`docs/FEATURES.md`): every page, what it does, what needs the Admin view, command-line names, and what's intentionally not included.
 - User guide reorganised into 14 numbered chapters, with a new "Your data and safety nets" chapter and an expanded FAQ (uninstaller safety, restoring leftovers, disk scan speed, junk cleaner, browser sync, SSDs).
@@ -18,7 +20,6 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 - `--scan <path>` start-up option.
 - Full documentation set: README, user guide, developer guide, architecture notes, contributing guide, code of conduct, security and privacy policies, third-party notices, MIT licence.
 - Project webpage (`docs/website/index.html`) with an illustrated tour of every feature.
-- `sync-to-home.ps1` to copy a working folder to the project home `E:\MyAPPS-AI\Advanced TaskManager`.
 
 ## [0.1.0] — 2026-11-19
 
@@ -49,3 +50,6 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ### Changed
 - Renamed from "Deep Task Manager" to **Advanced TaskManager**; settings folder moves automatically from `%APPDATA%\DeepTaskManager` to `%APPDATA%\AdvancedTaskManager`.
+
+[Unreleased]: https://github.com/toolsbyjs/Advanced-task-manager/compare/v0.2.0...HEAD
+[0.2.0]: https://github.com/toolsbyjs/Advanced-task-manager/releases/tag/v0.2.0
