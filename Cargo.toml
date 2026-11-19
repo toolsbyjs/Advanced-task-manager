@@ -1,0 +1,60 @@
+[package]
+name = "advanced_taskmanager"
+version = "0.1.0"
+edition = "2021"
+description = "Advanced TaskManager: a modern, low-overhead Windows task manager with Standard and Admin views"
+license = "MIT"
+readme = "README.md"
+authors = ["Advanced TaskManager contributors"]
+keywords = ["windows", "task-manager", "monitoring", "egui"]
+categories = ["gui", "os::windows-apis"]
+
+[[bin]]
+name = "advanced_taskmanager"
+path = "src/main.rs"
+
+[dependencies]
+eframe = { version = "0.29", default-features = false, features = ["default_fonts", "glow"] }
+egui_extras = { version = "0.29", default-features = false }
+egui = "0.29"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+image = { version = "0.25", default-features = false, features = ["png"] }
+chrono = { version = "0.4", default-features = false, features = ["clock", "std"] }
+
+[target.'cfg(windows)'.dependencies.windows-sys]
+version = "0.59"
+features = [
+  "Win32_Foundation",
+  "Win32_Security",
+  "Win32_Security_Authorization",
+  "Win32_System_Threading",
+  "Win32_System_ProcessStatus",
+  "Win32_System_Diagnostics_ToolHelp",
+  "Win32_System_Diagnostics_Debug",
+  "Win32_System_Diagnostics_Etw",
+  "Win32_System_Memory",
+  "Win32_System_SystemInformation",
+  "Win32_System_Performance",
+  "Win32_System_Power",
+  "Win32_System_Kernel",
+  "Win32_System_IO",
+  "Win32_Storage_FileSystem",
+  "Win32_NetworkManagement_IpHelper",
+  "Win32_NetworkManagement_Ndis",
+  "Win32_Networking_WinSock",
+  "Win32_UI_Shell",
+  "Win32_UI_WindowsAndMessaging",
+  "Win32_System_Registry",
+  "Win32_System_Services",
+  "Win32_System_Time",
+]
+
+[profile.release]
+opt-level = 3
+
+[profile.dev]
+opt-level = 1
+
+[profile.dev.package."*"]
+opt-level = 2
