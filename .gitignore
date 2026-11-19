@@ -33,3 +33,6 @@ shots/
 shots_err.txt
 *.log
 glyphs_missing.txt
+
+# Keep GitHub config even if a global ignore excludes dot-folders
+!.github/
