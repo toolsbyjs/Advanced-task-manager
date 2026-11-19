@@ -199,6 +199,6 @@ Look at the picture; test in the Standard view and, if relevant, the Admin view 
 3. Ship `target\release\advanced_taskmanager.exe` together with `LICENSE`, `README.md` and `THIRD_PARTY_NOTICES.md`.
 4. Optionally sign the executable (`signtool sign /fd SHA256 …`) so Windows SmartScreen trusts it.
 
-## 10. Project location
+## 10. Project home
 
-The project's home is `E:\MyAPPS-AI\Advanced TaskManager`. If you work in another folder, run `.\sync-to-home.ps1` to mirror your changes there (build output and screenshots are skipped).
+The repository is <https://github.com/toolsbyjs/Advanced-task-manager>. Releases are published at <https://github.com/toolsbyjs/Advanced-task-manager/releases>, and the website (`docs/website/index.html`) is deployed to GitHub Pages by `.github/workflows/pages.yml` on every push to `main` that touches the site or its images.

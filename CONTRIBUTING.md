@@ -15,7 +15,7 @@ Security problems should **not** go in a public issue; follow [SECURITY.md](SECU
 ## Getting set up
 
 1. Install Rust (stable, MSVC toolchain): <https://rustup.rs>
-2. Get the code (project home: `E:\MyAPPS-AI\Advanced TaskManager`).
+2. Get the code: `git clone https://github.com/toolsbyjs/Advanced-task-manager.git`
 3. Build and run:
    ```powershell
    cargo build

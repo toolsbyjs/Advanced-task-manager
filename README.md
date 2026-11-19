@@ -23,7 +23,11 @@ Written in Rust with [egui](https://github.com/emilk/egui). One small program, n
 
 More pictures: [uninstaller](docs/images/uninstaller.png) · [disk space analyzer](docs/images/diskspace.png) · [processes](docs/images/processes.png) · [performance](docs/images/performance.png) · [health report](docs/images/health.png) · [settings](docs/images/settings.png) · [light theme](docs/images/light.png)
 
-A detailed, illustrated explanation lives in the webpage at [`docs/website/index.html`](docs/website/index.html) — open it in any browser.
+A detailed, illustrated tour is on the project website: **<https://toolsbyjs.github.io/Advanced-task-manager/>** (source: [`docs/website/index.html`](docs/website/index.html)).
+
+## Download
+
+Get `advanced_taskmanager.exe` from the [latest release](https://github.com/toolsbyjs/Advanced-task-manager/releases/latest). There's nothing to install: run the program, and remove it by deleting the file. Each release includes a `SHA256SUMS.txt` checksum file.
 
 ## Requirements
 
@@ -32,10 +36,11 @@ A detailed, illustrated explanation lives in the webpage at [`docs/website/index
 - Administrator rights only for the Admin view
 - To build: Rust 1.80 or newer (stable, MSVC toolchain)
 
-## Quick start
+## Build from source
 
 ```powershell
-# from this folder
+git clone https://github.com/toolsbyjs/Advanced-task-manager.git
+cd Advanced-task-manager
 cargo build --release
 .\target\release\advanced_taskmanager.exe
 ```
@@ -87,9 +92,9 @@ Settings, snapshots, recordings, reports, dumps, uninstall history and the Unins
 | [Third-party notices](THIRD_PARTY_NOTICES.md) | Licences of the libraries used |
 | [Licence](LICENSE) | MIT |
 
-## Project location
+## Project home
 
-The home of this project is **`E:\MyAPPS-AI\Advanced TaskManager`**. `sync-to-home.ps1` copies a working folder there.
+Source, issues and releases: <https://github.com/toolsbyjs/Advanced-task-manager>. Website: <https://toolsbyjs.github.io/Advanced-task-manager/>.
 
 ## Licence
 

@@ -106,6 +106,7 @@
       <a href="#get">Get started</a>
       <a href="#faq">FAQ</a>
       <a href="#docs">Docs</a>
+      <a href="https://github.com/toolsbyjs/Advanced-task-manager">GitHub</a>
     </nav>
     <button class="toggle" id="themeBtn" title="Switch light/dark">◐ Theme</button>
   </div>
@@ -116,7 +117,7 @@
     <h1>See <span>every detail</span><br>of your Windows PC</h1>
     <p class="lead">Advanced TaskManager is a fast, private task manager written in Rust. It shows what the built-in Task Manager hides — threads, memory maps, handles, drivers, live system events — and explains it in plain language, with a health score, bottleneck detection and automation.</p>
     <div class="cta">
-      <a class="btn" href="#get">Get started</a>
+      <a class="btn" href="https://github.com/toolsbyjs/Advanced-task-manager/releases/latest">Download for Windows</a>
       <a class="btn ghost" href="#tour">Take the tour</a>
     </div>
     <div class="badges">
@@ -321,7 +322,7 @@
         <div class="card"><div class="icon">🧹</div><h3>Leaves no trace running</h3><p>No installer, background service or driver. Close the window and everything stops. Your data stays in one folder you can delete.</p></div>
         <div class="card"><div class="icon">✋</div><h3>You stay in control</h3><p>Changes happen only when you press a button or a rule you wrote fires. Ending processes and stopping services ask first.</p></div>
         <div class="card"><div class="icon">🧪</div><h3>Careful native code</h3><p>Every buffer from Windows is size-checked, every handle closed, and risky lookups (like pipe names) are skipped.</p></div>
-        <div class="card"><div class="icon">📄</div><h3>Open source</h3><p>MIT licensed. Read the <a href="../../SECURITY.md">security policy</a> and <a href="../../PRIVACY.md">privacy policy</a>.</p></div>
+        <div class="card"><div class="icon">📄</div><h3>Open source</h3><p>MIT licensed. Read the <a href="https://github.com/toolsbyjs/Advanced-task-manager/blob/main/SECURITY.md">security policy</a> and <a href="https://github.com/toolsbyjs/Advanced-task-manager/blob/main/PRIVACY.md">privacy policy</a>.</p></div>
       </div>
     </div>
   </section>
@@ -330,10 +331,16 @@
     <div class="wrap">
       <h2>Get started</h2>
       <p class="sub">Requirements: Windows 10 (1809+) or 11, 64-bit. To build: Rust stable (MSVC) and Visual Studio Build Tools.</p>
+      <div class="card" style="margin-bottom:18px">
+        <h3>Download</h3>
+        <p>Get the latest <code>advanced_taskmanager.exe</code> from the <a href="https://github.com/toolsbyjs/Advanced-task-manager/releases/latest">releases page</a>. There's nothing to install: run the program, and remove it by deleting the file. Each release includes a SHA-256 checksum.</p>
+        <p style="margin-top:14px"><a class="btn" href="https://github.com/toolsbyjs/Advanced-task-manager/releases/latest">Download the latest release</a></p>
+      </div>
       <div class="grid g2">
         <div class="card">
-          <h3>Build and run</h3>
-<pre><code>cd "E:\MyAPPS-AI\Advanced TaskManager"
+          <h3>Build from source</h3>
+<pre><code>git clone https://github.com/toolsbyjs/Advanced-task-manager.git
+cd Advanced-task-manager
 cargo build --release
 .\target\release\advanced_taskmanager.exe</code></pre>
           <p>The app opens in the Standard view. Click <b>🛡 Admin</b> in the top bar for the Admin view.</p>
@@ -383,20 +390,20 @@ cargo build --release
   <section id="docs">
     <div class="wrap">
       <h2>Documentation</h2>
-      <p class="sub">Everything is in the project folder.</p>
+      <p class="sub">All documentation is in the <a href="https://github.com/toolsbyjs/Advanced-task-manager">GitHub repository</a>.</p>
       <div class="grid g3">
-        <a class="card" href="../../README.md"><h3>README</h3><p>Overview, quick start and links.</p></a>
-        <a class="card" href="../USER_GUIDE.md"><h3>User guide</h3><p>Every page explained, safety nets and FAQ.</p></a>
-        <a class="card" href="../FEATURES.md"><h3>Feature reference</h3><p>All 46 pages on one page.</p></a>
-        <a class="card" href="../DEVELOPER_GUIDE.md"><h3>Developer guide</h3><p>Build, debug and extend the app.</p></a>
-        <a class="card" href="../ARCHITECTURE.md"><h3>Architecture</h3><p>Sampler, Windows readers and UI.</p></a>
-        <a class="card" href="../../CONTRIBUTING.md"><h3>Contributing</h3><p>How to propose changes.</p></a>
-        <a class="card" href="../../CODE_OF_CONDUCT.md"><h3>Code of conduct</h3><p>How we treat each other.</p></a>
-        <a class="card" href="../../SECURITY.md"><h3>Security policy</h3><p>Reporting and safety design.</p></a>
-        <a class="card" href="../../PRIVACY.md"><h3>Privacy policy</h3><p>What is read and stored.</p></a>
-        <a class="card" href="../../CHANGELOG.md"><h3>Changelog</h3><p>What changed in each version.</p></a>
-        <a class="card" href="../../THIRD_PARTY_NOTICES.md"><h3>Third-party notices</h3><p>Libraries and their licences.</p></a>
-        <a class="card" href="../../LICENSE"><h3>Licence</h3><p>MIT.</p></a>
+        <a class="card" href="https://github.com/toolsbyjs/Advanced-task-manager/blob/main/README.md"><h3>README</h3><p>Overview, quick start and links.</p></a>
+        <a class="card" href="https://github.com/toolsbyjs/Advanced-task-manager/blob/main/docs/USER_GUIDE.md"><h3>User guide</h3><p>Every page explained, safety nets and FAQ.</p></a>
+        <a class="card" href="https://github.com/toolsbyjs/Advanced-task-manager/blob/main/docs/FEATURES.md"><h3>Feature reference</h3><p>All 46 pages on one page.</p></a>
+        <a class="card" href="https://github.com/toolsbyjs/Advanced-task-manager/blob/main/docs/DEVELOPER_GUIDE.md"><h3>Developer guide</h3><p>Build, debug and extend the app.</p></a>
+        <a class="card" href="https://github.com/toolsbyjs/Advanced-task-manager/blob/main/docs/ARCHITECTURE.md"><h3>Architecture</h3><p>Sampler, Windows readers and UI.</p></a>
+        <a class="card" href="https://github.com/toolsbyjs/Advanced-task-manager/blob/main/CONTRIBUTING.md"><h3>Contributing</h3><p>How to propose changes.</p></a>
+        <a class="card" href="https://github.com/toolsbyjs/Advanced-task-manager/blob/main/CODE_OF_CONDUCT.md"><h3>Code of conduct</h3><p>How we treat each other.</p></a>
+        <a class="card" href="https://github.com/toolsbyjs/Advanced-task-manager/blob/main/SECURITY.md"><h3>Security policy</h3><p>Reporting and safety design.</p></a>
+        <a class="card" href="https://github.com/toolsbyjs/Advanced-task-manager/blob/main/PRIVACY.md"><h3>Privacy policy</h3><p>What is read and stored.</p></a>
+        <a class="card" href="https://github.com/toolsbyjs/Advanced-task-manager/blob/main/CHANGELOG.md"><h3>Changelog</h3><p>What changed in each version.</p></a>
+        <a class="card" href="https://github.com/toolsbyjs/Advanced-task-manager/blob/main/THIRD_PARTY_NOTICES.md"><h3>Third-party notices</h3><p>Libraries and their licences.</p></a>
+        <a class="card" href="https://github.com/toolsbyjs/Advanced-task-manager/blob/main/LICENSE"><h3>Licence</h3><p>MIT.</p></a>
       </div>
     </div>
   </section>
