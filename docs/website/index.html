@@ -1,0 +1,436 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Advanced TaskManager — see every detail of your Windows PC</title>
+<meta name="description" content="Advanced TaskManager is a fast, private, open-source task manager for Windows written in Rust. Standard and Admin views, deep process inspection, system management, intelligence and automation.">
+<style>
+  :root {
+    --bg: #0d1117; --panel: #161b22; --card: #1c222b; --card-hi: #242c38; --border: #303844;
+    --text: #dce2eb; --dim: #8b96a5; --accent: #38bdf8; --purple: #a878ff; --green: #4ade80;
+    --orange: #fb923c; --pink: #f472b6; --yellow: #facc15; --red: #f87171;
+    --radius: 14px; --maxw: 1180px;
+  }
+  body.light {
+    --bg: #eaeef4; --panel: #f7f8fb; --card: #ffffff; --card-hi: #e5ecf6; --border: #d0d6e0;
+    --text: #1a2028; --dim: #606a7a;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { margin: 0; font-family: "Segoe UI", system-ui, -apple-system, Roboto, Arial, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  .wrap { max-width: var(--maxw); margin: 0 auto; padding: 0 24px; }
+  header.top { position: sticky; top: 0; z-index: 10; background: color-mix(in srgb, var(--panel) 92%, transparent); backdrop-filter: blur(8px); border-bottom: 1px solid var(--border); }
+  header.top .wrap { display: flex; align-items: center; gap: 22px; height: 60px; }
+  .logo { display: flex; align-items: center; gap: 10px; font-weight: 650; font-size: 18px; color: var(--text); }
+  .logo .mark { width: 30px; height: 30px; border-radius: 9px; background: linear-gradient(135deg, var(--accent), var(--purple)); display: grid; place-items: center; color: #fff; font-size: 16px; }
+  nav.links { display: flex; gap: 18px; flex: 1; flex-wrap: wrap; }
+  nav.links a { color: var(--dim); font-size: 14px; }
+  nav.links a:hover { color: var(--text); text-decoration: none; }
+  .btn { display: inline-block; padding: 10px 18px; border-radius: 10px; background: var(--accent); color: #04121c; font-weight: 600; border: 0; cursor: pointer; font-size: 15px; }
+  .btn.ghost { background: transparent; color: var(--text); border: 1px solid var(--border); }
+  .btn:hover { text-decoration: none; filter: brightness(1.08); }
+  .toggle { background: var(--card); border: 1px solid var(--border); color: var(--text); border-radius: 8px; padding: 6px 10px; cursor: pointer; }
+  .hero { padding: 72px 0 40px; text-align: center; }
+  .hero h1 { font-size: clamp(34px, 5vw, 58px); line-height: 1.1; margin: 0 0 16px; letter-spacing: -0.02em; }
+  .hero h1 span { background: linear-gradient(90deg, var(--accent), var(--purple)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .hero p.lead { font-size: 19px; color: var(--dim); max-width: 760px; margin: 0 auto 26px; }
+  .hero .cta { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+  .badges { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-top: 22px; }
+  .badge { font-size: 12.5px; padding: 4px 11px; border-radius: 99px; background: var(--card); border: 1px solid var(--border); color: var(--dim); }
+  .shot { margin: 40px auto 0; border-radius: var(--radius); overflow: hidden; border: 1px solid var(--border); box-shadow: 0 30px 80px rgba(0,0,0,.45); max-width: 1100px; cursor: zoom-in; }
+  .shot img { display: block; width: 100%; height: auto; }
+  section { padding: 64px 0; border-top: 1px solid var(--border); }
+  section h2 { font-size: 32px; margin: 0 0 8px; letter-spacing: -0.01em; }
+  section p.sub { color: var(--dim); margin: 0 0 30px; font-size: 17px; max-width: 820px; }
+  .grid { display: grid; gap: 18px; }
+  .g2 { grid-template-columns: repeat(auto-fit, minmax(420px, 1fr)); }
+  .g3 { grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
+  .g4 { grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); }
+  .card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 22px; }
+  .card h3 { margin: 0 0 8px; font-size: 18px; }
+  .card p { margin: 0; color: var(--dim); }
+  .card ul { margin: 8px 0 0; padding-left: 18px; color: var(--dim); }
+  .card li { margin: 3px 0; }
+  .icon { font-size: 26px; margin-bottom: 8px; }
+  .pill { display: inline-block; font-size: 12px; font-weight: 600; padding: 2px 10px; border-radius: 99px; margin-bottom: 10px; }
+  .p-blue { background: rgba(56,189,248,.15); color: var(--accent); }
+  .p-purple { background: rgba(168,120,255,.15); color: var(--purple); }
+  .p-green { background: rgba(74,222,128,.15); color: var(--green); }
+  .p-orange { background: rgba(251,146,60,.15); color: var(--orange); }
+  .p-pink { background: rgba(244,114,182,.15); color: var(--pink); }
+  table { width: 100%; border-collapse: collapse; font-size: 15px; }
+  th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  th { color: var(--dim); font-weight: 600; font-size: 13px; text-transform: uppercase; letter-spacing: .04em; }
+  td.y { color: var(--green); } td.n { color: var(--dim); }
+  .tour { display: grid; grid-template-columns: 1fr 1.25fr; gap: 34px; align-items: center; margin: 46px 0; }
+  .tour.rev { grid-template-columns: 1.25fr 1fr; }
+  .tour.rev .text { order: 2; }
+  .tour img { width: 100%; border-radius: 12px; border: 1px solid var(--border); cursor: zoom-in; box-shadow: 0 16px 40px rgba(0,0,0,.35); }
+  .tour h3 { font-size: 24px; margin: 0 0 10px; }
+  .tour ul { color: var(--dim); padding-left: 18px; }
+  .tour li { margin: 5px 0; }
+  .flow { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 12px; counter-reset: step; }
+  .flow .card { position: relative; padding-top: 34px; }
+  .flow .card::before { counter-increment: step; content: counter(step); position: absolute; top: 12px; left: 22px; width: 22px; height: 22px; border-radius: 50%; background: var(--accent); color: #04121c; font-size: 12px; font-weight: 700; display: grid; place-items: center; }
+  pre { background: var(--panel); border: 1px solid var(--border); border-radius: 10px; padding: 16px; overflow-x: auto; font-size: 14px; }
+  code, kbd { font-family: "Cascadia Code", Consolas, monospace; }
+  kbd { background: var(--card-hi); border: 1px solid var(--border); border-bottom-width: 2px; border-radius: 6px; padding: 1px 7px; font-size: 13px; }
+  details { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 14px 18px; margin: 10px 0; }
+  details summary { cursor: pointer; font-weight: 600; }
+  details p { color: var(--dim); margin: 10px 0 0; }
+  footer { border-top: 1px solid var(--border); padding: 36px 0 60px; color: var(--dim); font-size: 14px; }
+  footer .cols { display: flex; gap: 40px; flex-wrap: wrap; justify-content: space-between; }
+  .lightbox { position: fixed; inset: 0; background: rgba(0,0,0,.85); display: none; align-items: center; justify-content: center; z-index: 50; cursor: zoom-out; padding: 30px; }
+  .lightbox img { max-width: 100%; max-height: 100%; border-radius: 10px; }
+  .lightbox.open { display: flex; }
+  .stat { text-align: center; }
+  .stat b { display: block; font-size: 34px; color: var(--accent); }
+  .stat span { color: var(--dim); font-size: 14px; }
+  @media (max-width: 860px) { .tour, .tour.rev { grid-template-columns: 1fr; } .tour.rev .text { order: 0; } nav.links { display: none; } .g2 { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <a class="logo" href="#"><span class="mark">◆</span> Advanced TaskManager</a>
+    <nav class="links">
+      <a href="#views">Two views</a>
+      <a href="#features">Features</a>
+      <a href="#tour">Tour</a>
+      <a href="#how">How it works</a>
+      <a href="#privacy">Privacy &amp; safety</a>
+      <a href="#get">Get started</a>
+      <a href="#faq">FAQ</a>
+      <a href="#docs">Docs</a>
+    </nav>
+    <button class="toggle" id="themeBtn" title="Switch light/dark">◐ Theme</button>
+  </div>
+</header>
+
+<main>
+  <div class="hero wrap">
+    <h1>See <span>every detail</span><br>of your Windows PC</h1>
+    <p class="lead">Advanced TaskManager is a fast, private task manager written in Rust. It shows what the built-in Task Manager hides — threads, memory maps, handles, drivers, live system events — and explains it in plain language, with a health score, bottleneck detection and automation.</p>
+    <div class="cta">
+      <a class="btn" href="#get">Get started</a>
+      <a class="btn ghost" href="#tour">Take the tour</a>
+    </div>
+    <div class="badges">
+      <span class="badge">Windows 10 &amp; 11</span>
+      <span class="badge">Rust + egui</span>
+      <span class="badge">No installer, no service</span>
+      <span class="badge">Zero telemetry</span>
+      <span class="badge">MIT licence</span>
+    </div>
+    <div class="shot" data-zoom><img src="../images/dashboard.png" alt="Advanced TaskManager dashboard showing CPU, memory, disk, network and GPU tiles, health score and top processes"></div>
+  </div>
+
+  <section>
+    <div class="wrap">
+      <div class="grid g4">
+        <div class="card stat"><b>44</b><span>process columns to choose from</span></div>
+        <div class="card stat"><b>46</b><span>pages across six areas</span></div>
+        <div class="card stat"><b>~12 ms</b><span>monitor cost per second (one core)</span></div>
+        <div class="card stat"><b>0</b><span>bytes sent off your PC</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="views">
+    <div class="wrap">
+      <h2>Two views: simple when you want it, everything when you need it</h2>
+      <p class="sub">Everyone starts in the Standard view. One click switches to the Admin view, which restarts the app as administrator through the normal Windows prompt and unlocks the deepest details and full control.</p>
+      <div class="card">
+        <table>
+          <tr><th></th><th>👤 Standard view</th><th>🛡 Admin view</th></tr>
+          <tr><td>Needs administrator rights</td><td class="n">No</td><td class="y">Yes — asked once by Windows</td></tr>
+          <tr><td>Process columns</td><td>17 everyday columns</td><td class="y">All 44 (kernel time, page faults, pools, integrity, command line…)</td></tr>
+          <tr><td>Process detail tabs</td><td>General · Performance · Network · History</td><td class="y">+ Threads · Modules · Memory map · Handles · Security token</td></tr>
+          <tr><td>Control</td><td>Your own processes</td><td class="y">Every process, service, driver, adapter and task</td></tr>
+          <tr><td>Extra pages</td><td class="n">—</td><td class="y">Process inspector · Kernel objects · Live system events (ETW)</td></tr>
+          <tr><td>Extra data</td><td class="n">—</td><td class="y">Security log · SSD wear &amp; temperature · ACPI temperatures · battery wear · boot timings</td></tr>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section id="features">
+    <div class="wrap">
+      <h2>Five areas, one window</h2>
+      <p class="sub">Built in five layers, from a light monitoring core to automation that acts for you.</p>
+      <div class="grid g3">
+        <div class="card"><span class="pill p-blue">Phase 1 · Monitor</span><h3>Advanced task manager core</h3>
+          <ul><li>Modern dashboard with health and bottlenecks</li><li>Process explorer: flat or tree, search, sort, 44 columns, column sets</li><li>CPU per core with kernel, DPC and interrupt time and clocks</li><li>Memory composition: in use, modified, standby, free, compressed, pools</li><li>Physical disks: active time, queue, response time</li><li>Network adapters, GPU engines and per-process GPU</li><li>Actions: end, end tree, suspend, priority, efficiency mode, affinity, dumps</li><li>Process history and system information</li></ul></div>
+        <div class="card"><span class="pill p-green">Phase 2 · Manage</span><h3>System management</h3>
+          <ul><li><b>Uninstaller</b> with leftover scan, backups and history</li><li>Windows apps, browser extensions, junk &amp; privacy cleaners, secure delete</li><li><b>Disk space analyzer</b>: folder tree, largest files, file types, duplicates and a treemap</li><li>Services: start, stop, restart, start type, dependencies</li><li>Startup apps from every location, enable/disable</li><li>Scheduled tasks with last/next run</li><li>Drivers with signatures and loaded kernel modules</li><li>Device inventory with problem codes</li><li>Power plans, settings and battery report</li><li>Network adapters, addresses, DNS, gateways</li><li>Windows security &amp; configuration</li><li>Configuration snapshots and change tracking</li></ul></div>
+        <div class="card"><span class="pill p-purple">Phase 3 · Deep</span><h3>Deep observability</h3>
+          <ul><li>Threads with state, wait reason, start address</li><li>Memory maps with protection and mapped files</li><li>Handles with names: files, keys, events, sections…</li><li>Live ETW tracing decoded field by field</li><li>Event Viewer integration</li><li>Diagnostics timeline</li><li>CSV performance recording and historical graphs</li><li>Hardware sensors and SSD health</li></ul></div>
+        <div class="card"><span class="pill p-orange">Phase 4 · Insights</span><h3>Intelligence</h3>
+          <ul><li>Bottleneck detection across every resource</li><li>Process behaviour classification</li><li>Memory, handle and thread leak candidates</li><li>Startup impact analysis and boot times</li><li>Spike-to-event correlation</li><li>Health score, HTML report and recommendations</li><li>Change impact analysis between snapshots</li></ul></div>
+        <div class="card"><span class="pill p-pink">Phase 5 · Automate</span><h3>Advanced automation</h3>
+          <ul><li>Rule engine: metric + threshold + duration → action</li><li>System profiles (Gaming, Quiet, Balanced…)</li><li>Process-specific profiles applied at every start</li><li>Alerts with acknowledgement</li><li>Scheduled monitoring</li><li>Script integrations with environment variables</li><li>Custom dashboards from 15 widgets</li></ul></div>
+        <div class="card"><span class="pill p-blue">Your way</span><h3>Fully configurable</h3>
+          <ul><li>Six themes and any accent colour</li><li>Zoom, text size, density, roundness</li><li>Graph fill, grid, smoothing and thickness</li><li>Favorites, foldable groups, icons-only sidebar</li><li>Hide pages you never use</li><li>Command palette <kbd>Ctrl</kbd>+<kbd>K</kbd> and shortcuts</li><li>Status bar and start-up page</li></ul></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="tour">
+    <div class="wrap">
+      <h2>A guided tour</h2>
+      <p class="sub">Click any picture to enlarge it.</p>
+
+      <div class="tour">
+        <div class="text">
+          <h3>Dashboard — your PC at a glance</h3>
+          <ul>
+            <li>Five live tiles: CPU, memory, disk, network and GPU — click one for its full page.</li>
+            <li>A single <b>health score</b> from load, memory, disk activity, free space, temperature, alerts and uptime.</li>
+            <li><b>What's slowing things down</b> names the bottleneck and the processes behind it.</li>
+            <li>Top users of CPU, memory and disk, latest events and drive space.</li>
+            <li><b>⚙ Customize</b> chooses which sections appear; <i>My dashboards</i> lets you build your own.</li>
+          </ul>
+        </div>
+        <img src="../images/dashboard.png" alt="Dashboard" data-zoom>
+      </div>
+
+      <div class="tour rev">
+        <div class="text">
+          <h3>Processes — every detail, your columns</h3>
+          <ul>
+            <li>Search by name, PID, publisher, path, user or command line (<kbd>Ctrl</kbd>+<kbd>F</kbd>).</li>
+            <li>Tree view shows which program started which.</li>
+            <li>Heat colours highlight heavy CPU, memory, disk and GPU use.</li>
+            <li>Column sets for memory, disk, CPU, graphics, security or "who made it", and free ordering.</li>
+            <li>Right-click for every action; click for details down to threads, DLLs, memory regions, handles and the security token.</li>
+          </ul>
+        </div>
+        <img src="../images/processes.png" alt="Process explorer" data-zoom>
+      </div>
+
+      <div class="tour">
+        <div class="text">
+          <h3>Uninstaller — remove programs completely</h3>
+          <ul>
+            <li>Every installed program with size, version, date and publisher; spot what's new this week.</li>
+            <li>Normal, silent or forced uninstall, then a leftover scan of the registry, folders, app data, shortcuts and services.</li>
+            <li>Registry keys are backed up before removal; files go to the Recycle Bin; anything shared with other programs is left unticked.</li>
+            <li>Plus Windows apps, browser extensions, junk and privacy cleaners, secure delete, restore points and Windows tools.</li>
+          </ul>
+        </div>
+        <img src="../images/uninstaller.png" alt="Uninstaller program list" data-zoom>
+      </div>
+
+      <div class="tour rev">
+        <div class="text">
+          <h3>Disk space analyzer — what fills your drive?</h3>
+          <ul>
+            <li>Whole NTFS drives scanned in seconds in the Admin view by reading the drive's file table directly; any folder can be walked in the Standard view.</li>
+            <li>Folder tree with each item's share of its parent, size, space on disk and counts.</li>
+            <li>Largest files anywhere, with wildcards, include/exclude patterns and limits.</li>
+            <li>Space per file type, and duplicate files you could remove.</li>
+            <li>A zoomable colour treemap: hover for details, double-click to dive in.</li>
+            <li>Right-click to open, show in Explorer, copy the path or move to the Recycle Bin. Export everything to CSV.</li>
+          </ul>
+        </div>
+        <img src="../images/diskspace.png" alt="Disk space analyzer with folder tree and treemap" data-zoom>
+      </div>
+
+      <div class="tour">
+        <div class="text">
+          <h3>Performance — the numbers behind the graphs</h3>
+          <ul>
+            <li>Every logical processor with its clock and interrupt time.</li>
+            <li>Memory lists the way Windows sees them: modified, standby, free and compressed.</li>
+            <li>Disk response time and queue length reveal slow drives.</li>
+            <li>Network errors and discards, GPU engines and graphics memory.</li>
+            <li>Windows from one minute to one hour of history.</li>
+          </ul>
+        </div>
+        <img src="../images/performance.png" alt="Performance page" data-zoom>
+      </div>
+
+      <div class="tour rev">
+        <div class="text">
+          <h3>Health report — answers, not just numbers</h3>
+          <ul>
+            <li>Score breakdown with the reason behind each part.</li>
+            <li>Recommendations in plain language with what to do next.</li>
+            <li>Save the whole report as a web page to keep or share.</li>
+            <li>Companion pages: bottlenecks, behaviour, leak candidates, startup analysis, correlations and change impact.</li>
+          </ul>
+        </div>
+        <img src="../images/health.png" alt="Health report" data-zoom>
+      </div>
+
+      <div class="tour">
+        <div class="text">
+          <h3>Settings — make it yours</h3>
+          <ul>
+            <li>Midnight, Graphite, Ocean, Forest, Light and High contrast themes.</li>
+            <li>Accent colours, zoom, text size and three densities.</li>
+            <li>Pick which pages appear, your favorites and the start-up page.</li>
+            <li>Choose bits or bytes for network speeds and how graphs look.</li>
+          </ul>
+        </div>
+        <img src="../images/settings.png" alt="Settings page" data-zoom>
+      </div>
+
+      <div class="tour rev">
+        <div class="text">
+          <h3>Light or dark — your choice</h3>
+          <ul>
+            <li>Every page follows the theme, including graphs and tables.</li>
+            <li>High contrast theme for maximum readability.</li>
+          </ul>
+        </div>
+        <img src="../images/light.png" alt="Light theme" data-zoom>
+      </div>
+    </div>
+  </section>
+
+  <section id="how">
+    <div class="wrap">
+      <h2>How it works</h2>
+      <p class="sub">Low overhead comes from asking Windows the right questions, the right number of times.</p>
+      <div class="flow">
+        <div class="card"><h3>One native call</h3><p>Every second, a single kernel query returns every process and thread with dozens of counters — no need to open each process.</p></div>
+        <div class="card"><h3>Counters</h3><p>Per-CPU times, memory lists, disk, GPU and thermal counters, network tables and connections are read alongside.</p></div>
+        <div class="card"><h3>Merge</h3><p>Rates, percentages and history are computed in one short step, then the window redraws.</p></div>
+        <div class="card"><h3>Understand</h3><p>Spikes, starts and exits go to the timeline; rules, profiles and schedules run; insights read the history.</p></div>
+        <div class="card"><h3>On demand</h3><p>Slow details — services, devices, memory maps, handles, event logs — are fetched in the background only when you open them.</p></div>
+      </div>
+      <div class="grid g2" style="margin-top:18px">
+        <div class="card"><h3>Built with</h3><ul><li><b>Rust</b> — native speed and memory safety</li><li><b>egui / eframe</b> — fast, GPU-drawn interface</li><li><b>windows-sys</b> — direct Windows API access</li><li>Windows' own tools for management data (CIM/WMI, powercfg)</li></ul></div>
+        <div class="card"><h3>Windows interfaces</h3><ul><li>Native system information and object queries</li><li>Performance Data Helper (PDH) counters</li><li>IP Helper tables for adapters and connections</li><li>Event Tracing for Windows with TDH decoding</li><li>Toolhelp, virtual-memory and token APIs</li></ul></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="privacy">
+    <div class="wrap">
+      <h2>Private and safe by design</h2>
+      <p class="sub">A tool that sees everything on your PC should tell no one about it.</p>
+      <div class="grid g3">
+        <div class="card"><div class="icon">🔒</div><h3>Nothing leaves your PC</h3><p>No telemetry, analytics, crash reports, accounts or auto-update. The app makes no network connections of its own.</p></div>
+        <div class="card"><div class="icon">🛡</div><h3>Least privilege</h3><p>Runs as a normal user until you choose the Admin view; administrator rights are requested through the standard Windows prompt.</p></div>
+        <div class="card"><div class="icon">🧹</div><h3>Leaves no trace running</h3><p>No installer, background service or driver. Close the window and everything stops. Your data stays in one folder you can delete.</p></div>
+        <div class="card"><div class="icon">✋</div><h3>You stay in control</h3><p>Changes happen only when you press a button or a rule you wrote fires. Ending processes and stopping services ask first.</p></div>
+        <div class="card"><div class="icon">🧪</div><h3>Careful native code</h3><p>Every buffer from Windows is size-checked, every handle closed, and risky lookups (like pipe names) are skipped.</p></div>
+        <div class="card"><div class="icon">📄</div><h3>Open source</h3><p>MIT licensed. Read the <a href="../../SECURITY.md">security policy</a> and <a href="../../PRIVACY.md">privacy policy</a>.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="get">
+    <div class="wrap">
+      <h2>Get started</h2>
+      <p class="sub">Requirements: Windows 10 (1809+) or 11, 64-bit. To build: Rust stable (MSVC) and Visual Studio Build Tools.</p>
+      <div class="grid g2">
+        <div class="card">
+          <h3>Build and run</h3>
+<pre><code>cd "E:\MyAPPS-AI\Advanced TaskManager"
+cargo build --release
+.\target\release\advanced_taskmanager.exe</code></pre>
+          <p>The app opens in the Standard view. Click <b>🛡 Admin</b> in the top bar for the Admin view.</p>
+        </div>
+        <div class="card">
+          <h3>Start-up options</h3>
+          <table>
+            <tr><td><code>--page processes</code></td><td>open a page directly</td></tr>
+            <tr><td><code>--theme Light</code></td><td>pick a theme for this run</td></tr>
+            <tr><td><code>--compact</code></td><td>icons-only sidebar</td></tr>
+            <tr><td><code>--scan D:\</code></td><td>open the disk space analyzer and scan</td></tr>
+            <tr><td><code>--screenshot shot.png</code></td><td>save a picture of the window and exit</td></tr>
+          </table>
+        </div>
+      </div>
+      <div class="card" style="margin-top:18px">
+        <h3>Keyboard shortcuts</h3>
+        <div class="grid g4" style="margin-top:10px">
+          <div><kbd>Ctrl</kbd>+<kbd>K</kbd> command palette</div>
+          <div><kbd>Ctrl</kbd>+<kbd>F</kbd> search processes</div>
+          <div><kbd>Ctrl</kbd>+<kbd>P</kbd> pause / resume</div>
+          <div><kbd>Ctrl</kbd>+<kbd>B</kbd> sidebar</div>
+          <div><kbd>Ctrl</kbd>+<kbd>1</kbd>…<kbd>9</kbd> favorites</div>
+          <div><kbd>Ctrl</kbd>+<kbd>+</kbd>/<kbd>−</kbd>/<kbd>0</kbd> zoom</div>
+          <div><kbd>Delete</kbd> end selected process</div>
+          <div><kbd>F1</kbd> all shortcuts</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="faq">
+    <div class="wrap">
+      <h2>Questions</h2>
+      <details><summary>Does it replace the Windows Task Manager?</summary><p>It can be used instead of it, but nothing is replaced or changed in Windows. You can keep using both.</p></details>
+      <details><summary>Why do some processes show "access denied"?</summary><p>Windows protects system processes and other users' processes. The Admin view, running as administrator, can read them.</p></details>
+      <details><summary>Does it slow my PC down?</summary><p>The monitor typically uses about 10–15 ms of one processor core per second — the exact figure is in the status bar. Slow it down further in Settings → Monitoring.</p></details>
+      <details><summary>Why are fan speeds and voltages not shown?</summary><p>Most PCs do not report them to Windows; reading them needs a vendor kernel driver, which this app deliberately does not install. Temperatures from thermal zones, battery details and NVIDIA GPU data (when NVIDIA's tools are present) are shown.</p></details>
+      <details><summary>Can I see how much internet each app uses?</summary><p>Windows doesn't count bytes per app by default. The app shows each process's connections, and the Live system events page in the Admin view shows network activity per process as it happens.</p></details>
+      <details><summary>Is the uninstaller safe?</summary><p>It runs each program's own uninstaller first, then shows every leftover before anything is removed. Registry keys are backed up and can be restored with one click, files go to the Recycle Bin, and anything another installed program also uses is left unticked.</p></details>
+      <details><summary>How fast is the disk space analyzer?</summary><p>In the Admin view a whole NTFS drive is read straight from its file table, usually in seconds. In the Standard view folders are walked with several threads — about 260,000 files took around a second in testing.</p></details>
+      <details><summary>Where are my settings?</summary><p>In <code>%APPDATA%\AdvancedTaskManager</code>, together with snapshots, recordings, reports, dumps, uninstall history and registry backups. Delete that folder to remove everything.</p></details>
+      <details><summary>Is it free?</summary><p>Yes. It is open source under the MIT licence.</p></details>
+    </div>
+  </section>
+
+  <section id="docs">
+    <div class="wrap">
+      <h2>Documentation</h2>
+      <p class="sub">Everything is in the project folder.</p>
+      <div class="grid g3">
+        <a class="card" href="../../README.md"><h3>README</h3><p>Overview, quick start and links.</p></a>
+        <a class="card" href="../USER_GUIDE.md"><h3>User guide</h3><p>Every page explained, safety nets and FAQ.</p></a>
+        <a class="card" href="../FEATURES.md"><h3>Feature reference</h3><p>All 46 pages on one page.</p></a>
+        <a class="card" href="../DEVELOPER_GUIDE.md"><h3>Developer guide</h3><p>Build, debug and extend the app.</p></a>
+        <a class="card" href="../ARCHITECTURE.md"><h3>Architecture</h3><p>Sampler, Windows readers and UI.</p></a>
+        <a class="card" href="../../CONTRIBUTING.md"><h3>Contributing</h3><p>How to propose changes.</p></a>
+        <a class="card" href="../../CODE_OF_CONDUCT.md"><h3>Code of conduct</h3><p>How we treat each other.</p></a>
+        <a class="card" href="../../SECURITY.md"><h3>Security policy</h3><p>Reporting and safety design.</p></a>
+        <a class="card" href="../../PRIVACY.md"><h3>Privacy policy</h3><p>What is read and stored.</p></a>
+        <a class="card" href="../../CHANGELOG.md"><h3>Changelog</h3><p>What changed in each version.</p></a>
+        <a class="card" href="../../THIRD_PARTY_NOTICES.md"><h3>Third-party notices</h3><p>Libraries and their licences.</p></a>
+        <a class="card" href="../../LICENSE"><h3>Licence</h3><p>MIT.</p></a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap cols">
+    <div><b>Advanced TaskManager</b><br>See every detail of your Windows PC.<br>© 2026 Advanced TaskManager contributors · MIT licence</div>
+    <div>Windows is a trademark of Microsoft Corporation.<br>This project is independent and not affiliated with Microsoft.</div>
+  </div>
+</footer>
+
+<div class="lightbox" id="lightbox"><img alt=""></div>
+
+<script>
+  // Light/dark toggle (remembered)
+  const btn = document.getElementById('themeBtn');
+  if (localStorage.getItem('atm-theme') === 'light') document.body.classList.add('light');
+  btn.addEventListener('click', () => {
+    document.body.classList.toggle('light');
+    localStorage.setItem('atm-theme', document.body.classList.contains('light') ? 'light' : 'dark');
+  });
+  // Click-to-enlarge pictures
+  const lb = document.getElementById('lightbox');
+  document.querySelectorAll('[data-zoom]').forEach(el => {
+    el.addEventListener('click', () => {
+      const img = el.tagName === 'IMG' ? el : el.querySelector('img');
+      lb.querySelector('img').src = img.src;
+      lb.querySelector('img').alt = img.alt;
+      lb.classList.add('open');
+    });
+  });
+  lb.addEventListener('click', () => lb.classList.remove('open'));
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') lb.classList.remove('open'); });
+</script>
+</body>
+</html>
